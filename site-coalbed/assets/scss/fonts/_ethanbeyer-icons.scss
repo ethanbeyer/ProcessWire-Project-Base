@@ -1,0 +1,734 @@
+@import "ethanbeyer-icons-variables";
+
+@font-face {
+  font-family: 'ethanbeyer-icons';
+  src:  url('#{$icomoon-font-path}/ethanbeyer-icons.eot?48rmsv');
+  src:  url('#{$icomoon-font-path}/ethanbeyer-icons.eot?48rmsv#iefix') format('embedded-opentype'),
+    url('#{$icomoon-font-path}/ethanbeyer-icons.ttf?48rmsv') format('truetype'),
+    url('#{$icomoon-font-path}/ethanbeyer-icons.woff?48rmsv') format('woff'),
+    url('#{$icomoon-font-path}/ethanbeyer-icons.svg?48rmsv#ethanbeyer-icons') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="i-"], [class*=" i-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'ethanbeyer-icons' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.i-folder {
+  &:before {
+    content: $i-folder;
+  }
+}
+.i-folder-open {
+  &:before {
+    content: $i-folder-open;
+  }
+}
+.i-folder-plus {
+  &:before {
+    content: $i-folder-plus;
+  }
+}
+.i-folder-minus {
+  &:before {
+    content: $i-folder-minus;
+  }
+}
+.i-folder-download {
+  &:before {
+    content: $i-folder-download;
+  }
+}
+.i-folder-upload {
+  &:before {
+    content: $i-folder-upload;
+  }
+}
+.i-price-tag {
+  &:before {
+    content: $i-price-tag;
+  }
+}
+.i-price-tags {
+  &:before {
+    content: $i-price-tags;
+  }
+}
+.i-calendar {
+  &:before {
+    content: $i-calendar;
+  }
+}
+.i-download {
+  &:before {
+    content: $i-download;
+  }
+}
+.i-upload {
+  &:before {
+    content: $i-upload;
+  }
+}
+.i-database {
+  &:before {
+    content: $i-database;
+  }
+}
+.i-cog {
+  &:before {
+    content: $i-cog;
+  }
+}
+.i-cogs {
+  &:before {
+    content: $i-cogs;
+  }
+}
+.i-mug {
+  &:before {
+    content: $i-mug;
+  }
+}
+.i-rocket {
+  &:before {
+    content: $i-rocket;
+  }
+}
+.i-fire {
+  &:before {
+    content: $i-fire;
+  }
+}
+.i-lab {
+  &:before {
+    content: $i-lab;
+  }
+}
+.i-bin {
+  &:before {
+    content: $i-bin;
+  }
+}
+.i-bin2 {
+  &:before {
+    content: $i-bin2;
+  }
+}
+.i-shield {
+  &:before {
+    content: $i-shield;
+  }
+}
+.i-cloud {
+  &:before {
+    content: $i-cloud;
+  }
+}
+.i-cloud-download {
+  &:before {
+    content: $i-cloud-download;
+  }
+}
+.i-cloud-upload {
+  &:before {
+    content: $i-cloud-upload;
+  }
+}
+.i-cloud-check {
+  &:before {
+    content: $i-cloud-check;
+  }
+}
+.i-download2 {
+  &:before {
+    content: $i-download2;
+  }
+}
+.i-upload2 {
+  &:before {
+    content: $i-upload2;
+  }
+}
+.i-download3 {
+  &:before {
+    content: $i-download3;
+  }
+}
+.i-upload3 {
+  &:before {
+    content: $i-upload3;
+  }
+}
+.i-earth {
+  &:before {
+    content: $i-earth;
+  }
+}
+.i-link {
+  &:before {
+    content: $i-link;
+  }
+}
+.i-checkbox-checked {
+  &:before {
+    content: $i-checkbox-checked;
+  }
+}
+.i-checkbox-unchecked {
+  &:before {
+    content: $i-checkbox-unchecked;
+  }
+}
+.i-radio-checked {
+  &:before {
+    content: $i-radio-checked;
+  }
+}
+.i-radio-checked2 {
+  &:before {
+    content: $i-radio-checked2;
+  }
+}
+.i-filter {
+  &:before {
+    content: $i-filter;
+  }
+}
+.i-share2 {
+  &:before {
+    content: $i-share2;
+  }
+}
+.i-mail {
+  &:before {
+    content: $i-mail;
+  }
+}
+.i-mail2 {
+  &:before {
+    content: $i-mail2;
+  }
+}
+.i-mail3 {
+  &:before {
+    content: $i-mail3;
+  }
+}
+.i-mail4 {
+  &:before {
+    content: $i-mail4;
+  }
+}
+.i-amazon {
+  &:before {
+    content: $i-amazon;
+  }
+}
+.i-google {
+  &:before {
+    content: $i-google;
+  }
+}
+.i-google2 {
+  &:before {
+    content: $i-google2;
+  }
+}
+.i-google3 {
+  &:before {
+    content: $i-google3;
+  }
+}
+.i-google-plus {
+  &:before {
+    content: $i-google-plus;
+  }
+}
+.i-google-plus2 {
+  &:before {
+    content: $i-google-plus2;
+  }
+}
+.i-google-plus3 {
+  &:before {
+    content: $i-google-plus3;
+  }
+}
+.i-hangouts {
+  &:before {
+    content: $i-hangouts;
+  }
+}
+.i-google-drive {
+  &:before {
+    content: $i-google-drive;
+  }
+}
+.i-facebook {
+  &:before {
+    content: $i-facebook;
+  }
+}
+.i-facebook2 {
+  &:before {
+    content: $i-facebook2;
+  }
+}
+.i-instagram {
+  &:before {
+    content: $i-instagram;
+  }
+}
+.i-whatsapp {
+  &:before {
+    content: $i-whatsapp;
+  }
+}
+.i-spotify {
+  &:before {
+    content: $i-spotify;
+  }
+}
+.i-telegram {
+  &:before {
+    content: $i-telegram;
+  }
+}
+.i-twitter {
+  &:before {
+    content: $i-twitter;
+  }
+}
+.i-vine {
+  &:before {
+    content: $i-vine;
+  }
+}
+.i-vk {
+  &:before {
+    content: $i-vk;
+  }
+}
+.i-renren {
+  &:before {
+    content: $i-renren;
+  }
+}
+.i-sina-weibo {
+  &:before {
+    content: $i-sina-weibo;
+  }
+}
+.i-rss {
+  &:before {
+    content: $i-rss;
+  }
+}
+.i-rss2 {
+  &:before {
+    content: $i-rss2;
+  }
+}
+.i-youtube {
+  &:before {
+    content: $i-youtube;
+  }
+}
+.i-youtube2 {
+  &:before {
+    content: $i-youtube2;
+  }
+}
+.i-twitch {
+  &:before {
+    content: $i-twitch;
+  }
+}
+.i-vimeo {
+  &:before {
+    content: $i-vimeo;
+  }
+}
+.i-vimeo2 {
+  &:before {
+    content: $i-vimeo2;
+  }
+}
+.i-lanyrd {
+  &:before {
+    content: $i-lanyrd;
+  }
+}
+.i-flickr {
+  &:before {
+    content: $i-flickr;
+  }
+}
+.i-flickr2 {
+  &:before {
+    content: $i-flickr2;
+  }
+}
+.i-flickr3 {
+  &:before {
+    content: $i-flickr3;
+  }
+}
+.i-flickr4 {
+  &:before {
+    content: $i-flickr4;
+  }
+}
+.i-dribbble {
+  &:before {
+    content: $i-dribbble;
+  }
+}
+.i-behance {
+  &:before {
+    content: $i-behance;
+  }
+}
+.i-behance2 {
+  &:before {
+    content: $i-behance2;
+  }
+}
+.i-deviantart {
+  &:before {
+    content: $i-deviantart;
+  }
+}
+.i-500px {
+  &:before {
+    content: $i-500px;
+  }
+}
+.i-steam {
+  &:before {
+    content: $i-steam;
+  }
+}
+.i-steam2 {
+  &:before {
+    content: $i-steam2;
+  }
+}
+.i-dropbox {
+  &:before {
+    content: $i-dropbox;
+  }
+}
+.i-onedrive {
+  &:before {
+    content: $i-onedrive;
+  }
+}
+.i-github {
+  &:before {
+    content: $i-github;
+  }
+}
+.i-npm {
+  &:before {
+    content: $i-npm;
+  }
+}
+.i-basecamp {
+  &:before {
+    content: $i-basecamp;
+  }
+}
+.i-trello {
+  &:before {
+    content: $i-trello;
+  }
+}
+.i-wordpress {
+  &:before {
+    content: $i-wordpress;
+  }
+}
+.i-joomla {
+  &:before {
+    content: $i-joomla;
+  }
+}
+.i-ello {
+  &:before {
+    content: $i-ello;
+  }
+}
+.i-blogger {
+  &:before {
+    content: $i-blogger;
+  }
+}
+.i-blogger2 {
+  &:before {
+    content: $i-blogger2;
+  }
+}
+.i-tumblr {
+  &:before {
+    content: $i-tumblr;
+  }
+}
+.i-tumblr2 {
+  &:before {
+    content: $i-tumblr2;
+  }
+}
+.i-yahoo {
+  &:before {
+    content: $i-yahoo;
+  }
+}
+.i-yahoo2 {
+  &:before {
+    content: $i-yahoo2;
+  }
+}
+.i-tux {
+  &:before {
+    content: $i-tux;
+  }
+}
+.i-appleinc {
+  &:before {
+    content: $i-appleinc;
+  }
+}
+.i-finder {
+  &:before {
+    content: $i-finder;
+  }
+}
+.i-android {
+  &:before {
+    content: $i-android;
+  }
+}
+.i-windows {
+  &:before {
+    content: $i-windows;
+  }
+}
+.i-windows8 {
+  &:before {
+    content: $i-windows8;
+  }
+}
+.i-soundcloud {
+  &:before {
+    content: $i-soundcloud;
+  }
+}
+.i-soundcloud2 {
+  &:before {
+    content: $i-soundcloud2;
+  }
+}
+.i-skype {
+  &:before {
+    content: $i-skype;
+  }
+}
+.i-reddit {
+  &:before {
+    content: $i-reddit;
+  }
+}
+.i-hackernews {
+  &:before {
+    content: $i-hackernews;
+  }
+}
+.i-wikipedia {
+  &:before {
+    content: $i-wikipedia;
+  }
+}
+.i-linkedin {
+  &:before {
+    content: $i-linkedin;
+  }
+}
+.i-linkedin2 {
+  &:before {
+    content: $i-linkedin2;
+  }
+}
+.i-lastfm {
+  &:before {
+    content: $i-lastfm;
+  }
+}
+.i-lastfm2 {
+  &:before {
+    content: $i-lastfm2;
+  }
+}
+.i-delicious {
+  &:before {
+    content: $i-delicious;
+  }
+}
+.i-stumbleupon {
+  &:before {
+    content: $i-stumbleupon;
+  }
+}
+.i-stumbleupon2 {
+  &:before {
+    content: $i-stumbleupon2;
+  }
+}
+.i-stackoverflow {
+  &:before {
+    content: $i-stackoverflow;
+  }
+}
+.i-pinterest {
+  &:before {
+    content: $i-pinterest;
+  }
+}
+.i-pinterest2 {
+  &:before {
+    content: $i-pinterest2;
+  }
+}
+.i-xing {
+  &:before {
+    content: $i-xing;
+  }
+}
+.i-xing2 {
+  &:before {
+    content: $i-xing2;
+  }
+}
+.i-flattr {
+  &:before {
+    content: $i-flattr;
+  }
+}
+.i-foursquare {
+  &:before {
+    content: $i-foursquare;
+  }
+}
+.i-yelp {
+  &:before {
+    content: $i-yelp;
+  }
+}
+.i-paypal {
+  &:before {
+    content: $i-paypal;
+  }
+}
+.i-chrome {
+  &:before {
+    content: $i-chrome;
+  }
+}
+.i-firefox {
+  &:before {
+    content: $i-firefox;
+  }
+}
+.i-IE {
+  &:before {
+    content: $i-IE;
+  }
+}
+.i-edge {
+  &:before {
+    content: $i-edge;
+  }
+}
+.i-safari {
+  &:before {
+    content: $i-safari;
+  }
+}
+.i-opera {
+  &:before {
+    content: $i-opera;
+  }
+}
+.i-file-pdf {
+  &:before {
+    content: $i-file-pdf;
+  }
+}
+.i-file-openoffice {
+  &:before {
+    content: $i-file-openoffice;
+  }
+}
+.i-file-word {
+  &:before {
+    content: $i-file-word;
+  }
+}
+.i-file-excel {
+  &:before {
+    content: $i-file-excel;
+  }
+}
+.i-libreoffice {
+  &:before {
+    content: $i-libreoffice;
+  }
+}
+.i-html-five {
+  &:before {
+    content: $i-html-five;
+  }
+}
+.i-html-five2 {
+  &:before {
+    content: $i-html-five2;
+  }
+}
+.i-css3 {
+  &:before {
+    content: $i-css3;
+  }
+}
+.i-git {
+  &:before {
+    content: $i-git;
+  }
+}
+.i-codepen {
+  &:before {
+    content: $i-codepen;
+  }
+}
+.i-svg {
+  &:before {
+    content: $i-svg;
+  }
+}
+.i-IcoMoon {
+  &:before {
+    content: $i-IcoMoon;
+  }
+}
+

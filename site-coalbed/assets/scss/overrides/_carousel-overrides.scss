@@ -1,0 +1,22 @@
+/*
+|==========================================================================
+| Carousel Overrides
+|==========================================================================
+*/
+.carousel-control {
+    background-color: rgba($brand-secondary, 0.7);
+    height: 50px;
+    top: 50%;
+    transform: translate(0px, -50%);
+    width: 50px;
+    background-image: none !important;
+    background-repeat: no-repeat !important;
+
+    &.left {
+        margin-left: -50px !important;
+    }
+
+    &.right {
+        margin-right: -50px !important;
+    }
+}

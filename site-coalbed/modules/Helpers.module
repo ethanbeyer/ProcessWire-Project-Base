@@ -1,0 +1,124 @@
+<?php
+
+class Helpers extends WireData implements Module {
+
+    /**
+     * getModuleInfo is a module required by all modules to tell ProcessWire about them
+     *
+     * @return array
+     *
+     */
+    public static function getModuleInfo()
+    {
+        return array(
+            'title' => 'Helper Class',
+            'version' => 100,
+            'summary' => 'test',
+            'href' => '',
+            'singular' => true,
+            'autoload' => true
+        );
+    }
+
+    
+    /**
+     * Making this class available with $helpers
+     */
+    public function init() {
+        $this->setFuel("helpers", $this);
+
+        // Add Hook for Changing Styles sent to Form Builder Form
+        $this->addHookAfter('FormBuilderRender::getStyles', $this, 'changeBootstrapFormStyles');
+    }
+
+    
+    /**
+     * Create Body Classes
+     */
+    public function outputHtmlBodyClasses($page)
+    {   
+        // Instantiate vars
+        $body_classes = array();
+
+        // if homepage
+        if($page === wire("pages")->get("/")) {
+            $body_classes[] = "home";
+        }
+
+        // Get the page's parents (but not home)
+        $parents = $page->parentsUntil("/");
+
+        // loop through the parents and echo out the name separated by a space.
+        foreach($parents as $parent) {
+            $name = $parent->name;
+            $body_classes[] = $name;                    // Parent Name
+        }
+
+        $body_classes[] = "template-$page->template";   // Template
+        $body_classes[] = "page-id-$page->id";          // Page id
+
+        $output = implode(" ", $body_classes);
+
+        return $output;
+    }
+
+    
+    /**
+     * Based on the Categories, Tags and ConnectedClient, this function gets "related" projects.
+     * 
+     * @return Array of at most 3 posts.
+     */
+    public function getRelatedPages( $base_page_id, $page_type )
+    {
+        // set values
+        $pages = wire("pages");
+        $page = $pages->get($base_page_id);
+        $search = array();
+        $matches = new WireArray;
+
+        // Categories
+        if($page->Categories->count > 0) {
+            foreach($page->get("Categories") as $category) {
+                $category_array[] = $category->name;
+            }
+            $category_string = implode("|", $category_array);
+            $search[] = "(Categories={$category_string})";
+        }
+
+        // Tags
+        if($page->Tags->count > 0) {
+            foreach($page->get("Tags") as $tag) {
+                $tag_array[] = $tag->name;
+            }
+            $tag_string = implode("|", $tag_array);
+            $search[] = "(Tags={$tag_string})";
+        }
+
+        // ConnectedClient
+        if($page->ConnectedClient) {
+            $search[] = "(ConnectedClient={$page->ConnectedClient})";
+        }
+
+        $search_string = implode(", ", $search);
+        $matches = $pages->find($search_string)->sort("random")->filter("id!={$page->id}, template={$page_type}, limit=3");
+        
+        // Debug
+        // $this->dd($search_string);
+        
+        // Output the final matches
+        return ($matches->count > 0) ? $matches : NULL;
+    }
+
+
+    /**
+     * This site already has Bootstrap styles - and I don't see any need to load new ones. This hook replaces
+     * the Bootstrap framework styles loaded by Form Builder and supplants them with site styles.
+     */
+    public function changeBootstrapFormStyles(HookEvent $event)
+    {
+        // $this->dd($event->return);
+        $styles = array();
+        $styles[] = "/build/css/app.css";
+        $event->return = $styles;
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "name": "ethanbeyer/processwire-project-base",
+    "description": "A sandbox dev site for processwire",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ethan Beyer",
+            "email": "null@ethanbeyer.com"
+        }
+    ],
+    "require": {
+        "symfony/var-dumper": "^3.2",
+        "nesbot/carbon": "^1.21",
+        "respect/validation": "^1.1"
+    }
+}
