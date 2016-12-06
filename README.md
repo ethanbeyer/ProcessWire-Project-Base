@@ -7,7 +7,7 @@
 # Startup
 1. Edit `SITENAME` and `XXX.XXX` in `./Vagrantfile`
 2. From within the project, run `$ vagrant up`
-3. After running `$ vagrant up`, a command to add the site's IP to your hostfile
+3. After running `$ vagrant up`, a command to add the site's IP to your hostfile will be printed. Copy/Paste that into the terminal to add the box's IP to your Hostfile.
 
 
 # Packages
