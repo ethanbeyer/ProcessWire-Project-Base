@@ -62,7 +62,7 @@ $primary_menu = $head->head_menuPages;
     <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
 </head>
 
-<body class="<?php echo $helpers->outputHtmlBodyClasses($page); ?>">
+<body class="<?php echo HtmlBodyClasses::renderClasses($page); ?>">
 
     <div class="wrapper">
 
