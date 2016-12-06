@@ -27,5 +27,6 @@
 
 # Lastly...
 1. Run `$ gulp` from within the project
-2. Log in to ProcessWire at `http://your-sitename/admin`
-3. Click on "Refresh" under *Modules*
+2. Run `$ chmod 400 site/config.php` from within the project
+3. Log in to ProcessWire at `http://your-sitename/admin`
+4. Click on "Refresh" under *Modules*
