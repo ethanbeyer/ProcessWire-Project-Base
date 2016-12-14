@@ -1,0 +1,57 @@
+<?php
+
+class HtmlBodyClasses extends WireData implements Module {
+
+    /**
+     * getModuleInfo is a module required by all modules to tell ProcessWire about them
+     *
+     * @return array
+     *
+     */
+    public static function getModuleInfo()
+    {
+        return array(
+            'title' => 'HTML Body Classes',
+            'version' => 100,
+            'summary' => 'Body class generator.',
+            'href' => '',
+            'singular' => true,
+            'autoload' => true
+        );
+    }
+
+    
+    /**
+     * Create Body Classes
+     *
+     * @param   $page       Page
+     *
+     * @return  $output     string of classes separated by a space
+     */
+    public static function renderClasses(Page $page)
+    {   
+        // Instantiate vars
+        $body_classes = array();
+
+        // if homepage
+        if($page === wire("pages")->get("/")) {
+            $body_classes[] = "home";
+        }
+
+        // Get the page's parents (but not home)
+        $parents = $page->parentsUntil("/");
+
+        // loop through the parents and echo out the name separated by a space.
+        foreach($parents as $parent) {
+            $name = $parent->name;
+            $body_classes[] = $name;                        // Parent Name
+        }
+
+        $body_classes[] = "template-{$page->template}";     // Template
+        $body_classes[] = "page-id-{$page->id}";            // Page id
+
+        $output = implode(" ", $body_classes);
+
+        return $output;
+    }
+}
