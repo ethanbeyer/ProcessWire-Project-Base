@@ -3,10 +3,8 @@
 // Class Use Calls
 
 /*
-page_fieldNames
-
-*****[otherPage]*****
-other_fieldName
+title
+Content
 
 /*
 |==========================================================================
@@ -20,17 +18,16 @@ other_fieldName
 | Variables
 |==========================================================================
 */
-// $helpers->dd($var);
 
 /*
 |==========================================================================
 | View
 |==========================================================================
 */
+// Two indents because we're at the bottom of the page
 ?>
+    </div> <!-- .wrapper -->   
 
-<?
-//
-// Section Name
-//
-?>
+    <script src="/build/js/app.js"></script>
+</body>
+</html>

@@ -25,8 +25,21 @@
   - DBPASS: root
 
 
-# Lastly...
+# Compile
 1. Run `$ gulp` from within the project
 2. Run `$ chmod 400 site/config.php` from within the project
 3. Log in to ProcessWire at `http://your-sitename/admin`
 4. Click on "Refresh" under *Modules*
+
+
+# If Uploads Are Not Working
+Run the following commands:
+```sh
+$ vagrant ssh
+$ sudo vim /etc/php5/apache2/php.ini
+$ /always_populate_raw_post_data<CR>
+```
+
+Uncomment the line: `always_populate_raw_post_data=-1` and save that file.
+
+Then run `$ sudo service apache2 restart`.

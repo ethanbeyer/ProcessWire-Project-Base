@@ -123,9 +123,6 @@ gulp.task('scripts', function(){
 
         // ImagesLoaded
         'node_modules/imagesloaded/imagesloaded.js',
-
-        // highlight.js and languages
-        'site/assets/vendor-raw/highlight/highlight.pack.js',
         
         // site/assets/js
         'site/assets/js/**/*.js', 

@@ -1,4 +1,6 @@
-// ISOTOPE
+/**
+ * Isotope Library
+ */
 var $grid = $('.iso-grid');
 
 $grid.isotope({
