@@ -49,8 +49,8 @@
 
         <nav class="navbar navbar-light bg-primary" role="navigation">
             <div class="container">
-                <a class="navbar-brand" href="<?php echo $home->httpUrl; ?>">
-                    <img alt="Brand" class="site-brand hidden-md-up" src="<?php echo $globals_logo->httpUrl; ?>">
+                <a class="navbar-brand" href="<?php echo $pages->get('/')->httpUrl; ?>">
+                    <img alt="Brand" class="site-brand hidden-md-up" src="<?php echo $g->globals_logoImage->httpUrl; ?>">
                     <span class="h2 text-uppercase site-title hidden-sm-down"><?php echo $g->globals_siteTitleText; ?></span>
                 </a>
 
