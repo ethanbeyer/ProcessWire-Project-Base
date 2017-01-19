@@ -37,8 +37,8 @@
     <?php // Javascripts ?>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <?php if($g->globals_typekitText) : ?>
-        <script type="text/javascript" src="//use.typekit.net/<?php echo $g->globals_typekitText; ?>.js"></script>
-        <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+        <script src="//use.typekit.net/<?php echo $g->globals_typekitText; ?>.js"></script>
+        <script>try{Typekit.load({ async: true });}catch(e){}</script>
     <?php endif; ?>
 
 </head>
