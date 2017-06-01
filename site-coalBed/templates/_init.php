@@ -4,7 +4,7 @@
 $g = $pages->get("/globals");
 
 // Menus
-include("./_menus.php");
+include("./_navigation.php");
 
 
 /**
