@@ -20,7 +20,7 @@ var $assets = {
         scripts:    'site/js/**/*.js',
         fonts:      'site/fonts/**/*',
     },
-    $bootstrap = 'node_modules/bootstrap/';
+    $bootstrap = 'node_modules/bootstrap-sass/';
 
 
 /**
@@ -64,7 +64,7 @@ gulp.task('styles', function(){
         includePaths: [
             // this line lets you put the full relative path to a scss file from project root. no more "../../../"!
             "./",
-            $bootstrap + "scss/",
+            $bootstrap + "assets/stylesheets/",
         ]
     }))
     
@@ -119,10 +119,11 @@ gulp.task('scripts', function(){
     var SCRIPTS = [
         // I wish there was a better way to do this, but there isn't!
         // Add all the scripts to bundle in here. Example:
+        // 
         // 'node_modules/bootstrap/js/bootstrap.js',
         
-        // site/assets/js
-        'site/assets/js/**/*.js', 
+        // site/js
+        $assets.scripts, 
     ];
 
     // So size can be sent to gulp-notify
@@ -133,7 +134,7 @@ gulp.task('scripts', function(){
 
     // uglify the scripts by mashing them together in a single line per script with single letters as variables
     .pipe($.uglify({
-        //preserveComments: "license",
+        // preserveComments: "license",
     }))
 
     // take all the uglified scripts and put them in one file
