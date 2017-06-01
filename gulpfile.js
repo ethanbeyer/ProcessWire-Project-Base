@@ -16,9 +16,9 @@ var merge   = require('merge-stream');
 |==========================================================================
 */
 var $assets = {
-        styles: 'site/assets/scss/**/*.scss',
-        scripts: 'site/assets/js/**/*.js',
-        fonts: 'site/assets/fonts/**/*',
+        styles:     'site/scss/**/*.scss',
+        scripts:    'site/js/**/*.js',
+        fonts:      'site/fonts/**/*',
     },
     $bootstrap = 'node_modules/bootstrap/';
 
