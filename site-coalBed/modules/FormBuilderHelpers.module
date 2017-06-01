@@ -1,0 +1,45 @@
+<?php
+
+class FormBuilderHelpers extends WireData implements Module {
+
+    /**
+     * getModuleInfo is a module required by all modules to tell ProcessWire about them
+     *
+     * @return array
+     *
+     */
+    public static function getModuleInfo()
+    {
+        return array(
+            'title' => 'Form Builder Helpers',
+            'version' => 100,
+            'summary' => 'test',
+            'href' => '',
+            'singular' => true,
+            'autoload' => true,
+            'requires' => array('FormBuilder'),
+        );
+    }
+
+    
+    /**
+     * Making this class available with $helpers
+     */
+    public function init() {
+        // Add Hook for Changing Styles sent to Form Builder Form
+        $this->addHookAfter('FormBuilderRender::getStyles', $this, 'changeBootstrapFormStyles');
+    }
+
+
+    /**
+     * This site already has Bootstrap styles - and I don't see any need to load new ones. This hook replaces
+     * the Bootstrap framework styles loaded by Form Builder and supplants them with site styles.
+     */
+    public function changeBootstrapFormStyles(HookEvent $event)
+    {
+        // $this->dd($event->return);
+        $styles = array();
+        $styles[] = "/build/css/app.css";
+        $event->return = $styles;
+    }
+}

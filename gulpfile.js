@@ -16,9 +16,9 @@ var merge   = require('merge-stream');
 |==========================================================================
 */
 var $assets = {
-        styles: 'site/assets/scss/**/*.scss',
-        scripts: 'site/assets/js/**/*.js',
-        fonts: 'site/assets/fonts/**/*',
+        styles:     'site/scss/**/*.scss',
+        scripts:    'site/js/**/*.js',
+        fonts:      'site/fonts/**/*',
     },
     $bootstrap = 'node_modules/bootstrap/';
 
@@ -59,9 +59,11 @@ gulp.task('styles', function(){
 
     // compilation of the SASS
     .pipe($.sass({
-        // outputStyle: "compressed", // nested, expanded, compact, compressed
+        // nested, expanded, compact, compressed
+        outputStyle: "compressed",
         includePaths: [
-            "./", // this line lets me put the full relative path to a scss file from project root. no more "../../../"!
+            // this line lets you put the full relative path to a scss file from project root. no more "../../../"!
+            "./",
             $bootstrap + "scss/",
         ]
     }))
@@ -81,9 +83,6 @@ gulp.task('styles', function(){
         cascade: false
     }))
 
-    // Merge all the media queries into one
-    .pipe($.combineMq())
-
     // get the size of the file created
     .pipe(s)
 
@@ -99,9 +98,15 @@ gulp.task('styles', function(){
 
 // Styles Minification for Production
 gulp.task('styles:min', function(){
+    const s = $.size();
     return gulp.src('build/css/*.css')
         .pipe($.cleanCss())
-        .pipe(gulp.dest('build/css/'));
+        .pipe(s)
+        .pipe(gulp.dest('build/css/'))
+        .pipe($.notify({
+            message: () => `Styles Scrubbed! Size: ${s.prettySize}`,
+            onLast: true
+        }));
 })
 
 /*
@@ -112,17 +117,9 @@ gulp.task('styles:min', function(){
 gulp.task('scripts', function(){
 
     var SCRIPTS = [
-        // Tether
-        'node_modules/tether/dist/js/tether.min.js',
-
-        // Bootstrap
-        'node_modules/bootstrap/dist/js/bootstrap.js',
-        
-        // Isotope
-        'node_modules/isotope-layout/dist/isotope.pkgd.js',
-
-        // ImagesLoaded
-        'node_modules/imagesloaded/imagesloaded.js',
+        // I wish there was a better way to do this, but there isn't!
+        // Add all the scripts to bundle in here. Example:
+        // 'node_modules/bootstrap/js/bootstrap.js',
         
         // site/assets/js
         'site/assets/js/**/*.js', 
@@ -136,7 +133,7 @@ gulp.task('scripts', function(){
 
     // uglify the scripts by mashing them together in a single line per script with single letters as variables
     .pipe($.uglify({
-        preserveComments: "license",
+        //preserveComments: "license",
     }))
 
     // take all the uglified scripts and put them in one file
