@@ -1,22 +1,20 @@
-// Overwrites bootstrap vars if they have the same name. 
-@import "overrides/variable-overrides";
-
 // Bootstrap itself
+// 
+// 
+// Bootstrap SASS Variable Overrides
+@import "custom";
+// Sources directly from /node_modules/bootstrap.
+// This will pull in ALL of bootstrap, unless a separate file is created that is choosey about which files to mash together.
 @import "bootstrap";
+
+// Helpers
+@import "helpers/d-table";
+@import "helpers/p-relative";
+
+// Fonts
+@import "fonts/ethanbeyer-icons";
 
 // Vendors
 @import "vendors";
 
-// Components
-// @import "components/?";
-
-// Overrides
-// @import "overrides/?";
-
-// Helpers
-@import "helpers/spacer";
-@import "helpers/display";
-@import "helpers/position-relative";
-
-// Fonts
-@import "fonts/ethanbeyer-icons";
+// ...
