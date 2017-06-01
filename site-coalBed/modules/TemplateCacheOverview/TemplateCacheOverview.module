@@ -1,0 +1,365 @@
+<?php namespace ProcessWire;
+
+/**
+*
+* TemplateCacheOverview
+*
+* See README.md for usage instructions.
+*
+* @author Tabea David <info@justonestep.de>
+* @version 0.0.3
+* @copyright Copyright (c) 2017
+* @see http://www.processwire.com
+*/
+
+/**
+* Class TemplateCacheOverview
+*/
+class TemplateCacheOverview extends Process implements Module {
+
+  /**
+   * Return information about this module
+   *
+   */
+  public static function getModuleInfo() {
+    return array(
+      'title' => 'Template Cache Overview',
+      'summary' => 'Overview over the template cache management of all templates of a site.',
+      'version' => 003,
+      'author' => 'Tabea David',
+      'icon' => 'table',
+      'href' => 'https://github.com/justonestep/processwire-templatecacheoverview',
+    );
+  }
+
+  const PAGENAME = 'templatecacheoverview';
+
+  /**
+   * Initialize the module
+   *
+   */
+  public function init() {
+    parent::init();
+  }
+
+  /**
+   * Execute Process Template Cache Overview
+   */
+  public function ___execute() {
+    $out =
+      $this->getIntro() .
+      $this->getEditConfigLink() .
+      $this->getTable() .
+      $this->getHints() .
+      $this->getClearcacheBtn();
+
+    return $out;
+  }
+
+  /**
+    * Get data table
+    *
+    * @return string
+   */
+  private function getTable() {
+    $tplAdminUrl = $this->pages->get('name=template,template=admin')->url;
+
+    $table = $this->wire('modules')->get('MarkupAdminDataTable');
+    $table->setSortable(true);
+    $table->setEncodeEntities(false);
+    $table->headerRow($this->getHeaderRow());
+
+    foreach ($this->templates->find('sort=-cacheTime') as $tpl) {
+      // skip system templates
+      if ($tpl->flags & Template::flagSystem) continue;
+
+      // caching disabled
+      $cacheEnabled = 'remove';
+      $useFor = '';
+      $btn = '';
+
+      // overrides if caching enabled
+      $enbld = $tpl->cacheTime;
+      if ($enbld) {
+        $cacheEnabled = 'check';
+        $useFor = $tpl->useCacheForUsers ? $this->_('all') : $this->_('guests');
+        $btn = $this->getClearcacheBtn($tpl->name, false);
+      }
+
+      $editLink = "{$tplAdminUrl}edit?id={$tpl->id}#tab_cache";
+      $name = "<a href='{$editLink}' title='{$this->_('Edit template')} {$tpl->name}'>{$tpl->name}</a>";
+      $row = array($name);
+
+      foreach ($this->columns as $col) {
+        switch ($col) {
+          case 'cacheStatus':
+            $content = "<span class='hidden'>$cacheEnabled</span> <i class='fa fa-fw fa-$cacheEnabled'></i>";
+            break;
+          case 'cacheTime':
+            $content = $tpl->cacheTime;
+            if ($content > 0) $content .= " ({$this->seconds2human($tpl->cacheTime)})";
+            break;
+          case 'useCacheForUsers':
+            $content = $enbld ? $useFor : '';
+            break;
+          case 'noCacheGetVars':
+            $content = $enbld ? $tpl->noCacheGetVars : '';
+            break;
+          case 'noCachePostVars':
+            $content = $enbld ? $tpl->noCachePostVars : '';
+            break;
+          case 'cacheExpire':
+            $content = $enbld ? $this->getCacheExpire($tpl->cacheExpire) : '';
+            break;
+          default:
+            $content = '';
+        }
+
+        $row[] = $content;
+      }
+
+      $row[] = $btn;
+      $table->row($row);
+    }
+
+    return $table->render();
+  }
+
+  /**
+   * Human readable time
+   *
+   * @param int $inputSeconds
+   * @return string
+   */
+  private function seconds2human($inputSeconds) {
+    $secondsInAMinute = 60;
+    $secondsInAnHour = 60 * $secondsInAMinute;
+    $secondsInADay = 24 * $secondsInAnHour;
+
+    // extract days
+    $days = floor($inputSeconds / $secondsInADay);
+
+    // extract hours
+    $hourSeconds = $inputSeconds % $secondsInADay;
+    $hours = floor($hourSeconds / $secondsInAnHour);
+
+    // extract minutes
+    $minuteSeconds = $hourSeconds % $secondsInAnHour;
+    $minutes = floor($minuteSeconds / $secondsInAMinute);
+
+    // extract the remaining seconds
+    $remainingSeconds = $minuteSeconds % $secondsInAMinute;
+    $seconds = ceil($remainingSeconds);
+
+    $units = array(
+      'day' => (int)$days,
+      'hour' => (int)$hours,
+      'minute' => (int)$minutes,
+      'second' => (int)$seconds
+    );
+
+    $out = array();
+    foreach ($units as $unit => $amount) {
+      if (!$amount) continue;
+      $u = $amount === 1 ? $unit : "{$unit}s";
+      $out[] = "{$amount} {$this->getUnit($u)}";
+    }
+
+    return implode(' ', $out);
+  }
+
+  /**
+   * Get Unit
+   *
+   * @param string $key
+   * @return string
+   */
+  private function getUnit($key) {
+    $units = array(
+      'day' => $this->_('day'),
+      'hour' => $this->_('hour'),
+      'minute' => $this->_('minute'),
+      'second' => $this->_('second'),
+      'days' => $this->_('days'),
+      'hours' => $this->_('hours'),
+      'minutes' => $this->_('minutes'),
+      'seconds' => $this->_('seconds')
+    );
+
+    return array_key_exists($key, $units) ? $units[$key] : '';
+  }
+
+  /**
+   * Get cache expire
+   *
+   * @return string
+   */
+  private function getCacheExpire($index) {
+    $possibilities = array(
+      Template::cacheExpirePage => $this->_('saved page only'),
+      Template::cacheExpireSite => $this->_('entire site'),
+      Template::cacheExpireParents =>$this->_('saved page and parents'),
+      Template::cacheExpireSpecific => $this->_('saved page and specified pages'),
+      Template::cacheExpireSelector => $this->_('saved page and pages matching selector'),
+      Template::cacheExpireNone => $this->_('Do nothing')
+    );
+
+    return $possibilities[$index];
+  }
+
+  /**
+   * Get Table Header
+   *
+   * @return array
+   */
+  private function getHeaderRow() {
+    $conf = new TemplateCacheOverviewConfig;
+    $options = $conf->getOptions();
+
+    $cols = array($this->_('Name'));
+    foreach ($this->columns as $col) $cols[] = $options[$col];
+    $cols[] = $this->_('Clear');
+
+    return $cols;
+  }
+
+  /**
+   * Edit module configuration
+   *
+   * @return string
+   */
+  private function getEditConfigLink() {
+    $moduleAdminUrl = $this->pages->get('name=module,template=admin')->url;
+    $url = "{$moduleAdminUrl}edit?name={$this->className}";
+    $linkTitle = "$this->className {$this->_('module configuration screen')}";
+    $link = "<a href='$url' title='{$this->_('Edit module configuration')}'>{$linkTitle}</a>";
+    $text = $this->_('Manage what columns to show in the results from the') . " {$link}.";
+
+    return "<p class='detail'><i class='fa fa-fw fa-info-circle'></i> {$text}</p>";
+  }
+
+  /**
+   * Btn for clearing template cache
+   *
+   * @return string
+   */
+  private function getClearcacheBtn($name = '', $showInfo = true) {
+    $infoText = $this->_('The button below clears generated template cache files, forcing them to be re-cached the next time they are accessed. Note that this may cause a temporary delay for one or more requests while pages are re-cached.');
+    $info = "<p class='detail'><i class='fa fa-fw fa-info-circle'></i> {$infoText}</p>";
+
+    $btnText = $this->_('Clear template cache');
+    $btnIcon = "<i class='fa fa-trash-o'></i>";
+    $btnClass = "ui-button ui-widget ui-corner-all ui-state-default ui-priority-secondary";
+
+    if (!$name) {
+      $btnContent = "<span class='ui-button-text'>{$btnIcon} {$btnText}</span>";
+      $btnLink = "<a href='clearcache' title='{$this->_('Clear template cache')}' class='{$btnClass}'>{$btnContent}</a>";
+      $btn = "<p class='detail'>{$btnLink}</p>";
+    } else {
+      $btn = "<a href='clearcache?name=$name' title='{$this->_('Clear template cache for template')} {$name}'>{$btnIcon}</a>";
+    }
+
+    $out = $showInfo ? $info . $btn : $btn;
+
+    return $out;
+  }
+
+  /**
+   * Get hints for caching
+   *
+   * @return string
+   */
+  private function getHints() {
+    $hints = array(
+      '&sup1; ' . $this->_('For example: 60 = 1 minute, 600 = 10 minutes, 3600 = 1 hour, 86400 = 1 day, 604800 = 1 week, 2419200 = 1 month.'),
+      '&sup2; ' . $this->_('Note that the cache is always disabled for pages where the user has edit access, regardless of what you select.')
+    );
+
+    $hintsRendered = implode("<br />", $hints);
+    return "<p class='notes'>{$hintsRendered}</p>";
+  }
+
+  /**
+   * Get intro text
+   *
+   * @return string
+   */
+  private function getIntro() {
+    $intro = $this->_('Caching can help significantly with page render time on resource-heavy pages. But caching should not be used on templates that need to process constantly changing data, like from forms or sessions. Also note that URL segments are cachable, but GET and POST vars are not.');
+    return "<p class='description'>{$intro}</p>";
+  }
+
+  /**
+   * Executed when ./clearcache/ url for module is accessed
+   */
+  public function ___executeClearcache() {
+    $homePage = $this->pages->get('/');
+    $pageRender = $this->modules->get('PageRender');
+
+    $selector = "has_parent!=2,id!=2|7,status<".Page::statusTrash.",include=all";
+    if ($name = $this->input->get('name')) {
+      $selector .= ",template=$name";
+    }
+
+    $items = $this->pages->findMany($selector);
+    $pageRender->clearCacheFilePages($items, $homePage);
+
+    $this->session->redirect($this->page->url);
+  }
+
+  /**
+   * Admin process page
+   *
+   * @return Page
+   */
+  private function getAdminPage() {
+    $moduleID = $this->modules->getModuleID($this);
+    return $this->pages->get("template=admin, process=$moduleID, name=" . self::PAGENAME);
+  }
+
+  /**
+   * Does the admin process page exist
+   *
+   * @return boolean
+   */
+  private function doesPageExist() {
+    $page = $this->getAdminPage();
+    return $page instanceof NullPage ? false : true;
+  }
+
+  /**
+   * Install routine
+   * Called only when the module is installed
+   *
+   * @access public
+   */
+  public function ___install() {
+    if (!$this->doesPageExist()) {
+      $page = new Page();
+      $page->template = 'admin';
+      $page->name = self::PAGENAME;
+      $page->parent = $this->pages->get($this->config->adminRootPageID)->child('name=setup');
+      $page->process = $this;
+      $page->title = $this->_('Template Cache');
+      $page->save();
+
+      $this->message("Created Page: {$page->path}");
+    }
+  }
+
+  /**
+   * Uninstall routine
+   * Called only when the module is uninstalled
+   * this should return the site to the same state it was in before the module was installed
+   *
+   * @access public
+   */
+  public function ___uninstall() {
+    if ($this->doesPageExist()) {
+      $page = $this->getAdminPage();
+      $this->message("Deleting Page: {$page->path}");
+      $page->delete();
+    }
+  }
+
+}
