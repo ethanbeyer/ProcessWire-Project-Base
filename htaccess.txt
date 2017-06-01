@@ -110,6 +110,9 @@ ExpiresDefault "access plus 2 days"
 
 </IfModule>
 
+
+
+
 #################################################################################################
 # START PROCESSWIRE HTACCESS DIRECTIVES
 # @version 3.0
@@ -180,9 +183,9 @@ ErrorDocument 404 /index.php
 # -----------------------------------------------------------------------------------------------
 
 <IfModule mod_php5.c>
-  php_flag magic_quotes_gpc		off
-  php_flag magic_quotes_sybase		off
-  php_flag register_globals		off
+  php_flag magic_quotes_gpc   off
+  php_flag magic_quotes_sybase    off
+  php_flag register_globals   off
 </IfModule>
 
 # -----------------------------------------------------------------------------------------------
@@ -204,6 +207,10 @@ DirectoryIndex index.php index.html index.htm
   # 9. If you only want to allow HTTPS, uncomment the RewriteCond and RewriteRule lines below.
   # -----------------------------------------------------------------------------------------------
   # RewriteCond %{HTTPS} off
+  # RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+  
+  # If using an AWS load balancer, use these two lines below instead of those above:
+  # RewriteCond %{HTTP:X-Forwarded-Proto} =http 
   # RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
   # -----------------------------------------------------------------------------------------------
