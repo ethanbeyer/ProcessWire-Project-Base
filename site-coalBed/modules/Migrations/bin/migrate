@@ -1,0 +1,7 @@
+#!/usr/bin/env php
+<?php
+use ProcessWire\Migrations\CLI;
+
+include __DIR__ . '/../../../../index.php';
+
+CLI::run($wire);

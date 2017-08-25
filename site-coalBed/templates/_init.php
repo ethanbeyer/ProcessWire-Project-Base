@@ -3,8 +3,11 @@
 // Global Settings
 $g = $pages->get("/globals");
 
+// Global Functions
+require_once("./_functions.php");
+
 // Menus
-include("./_navigation.php");
+require_once("./_navigation.php");
 
 
 /**

@@ -27,7 +27,4 @@ Vagrant.configure("2") do |config|
         s.inline = "sudo composer self-update"
     end
 
-    # Now we remind ourselves to add this new site to the hosts file via ghost
-    config.vm.provision "shell", inline: "printf '\rsudo ghost add " + $sitename + " " + $ipaddress + "'"
-
 end

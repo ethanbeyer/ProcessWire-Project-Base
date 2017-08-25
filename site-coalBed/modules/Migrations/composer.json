@@ -1,0 +1,34 @@
+{
+  "name": "lostkobrakai/migrations",
+  "description": "Module to handle migration files in ProcessWire",
+  "homepage": "https://lostkobrakai.github.io/Migrations/",
+  "keywords": [
+    "ProcessWire",
+    "migration",
+    "database"
+  ],
+  "type": "pw-module",
+  "license": "MIT",
+  "bin": [
+    "bin/migrate"
+  ],
+  "authors": [
+    {
+      "name": "Benjamin Milde",
+      "homepage": "https://kobrakai.de/",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "hari/pw-module": "~1.0",
+    "symfony/console": "^3.2"
+  },
+  "require-dev": {
+    "lostkobrakai/conveyor": "^0.1.3"
+  },
+  "autoload": {
+    "psr-4": {
+      "ProcessWire\\Migrations\\": "src/"
+    }
+  }
+}

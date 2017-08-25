@@ -28,7 +28,7 @@ class TemplateCacheOverview extends Process implements Module {
       'version' => 003,
       'author' => 'Tabea David',
       'icon' => 'table',
-      'href' => 'https://github.com/justonestep/processwire-templatecacheoverview',
+      'href' => 'https://github.com/justb3a/processwire-templatecacheoverview',
     );
   }
 
