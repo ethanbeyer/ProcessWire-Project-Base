@@ -1,0 +1,361 @@
+<?php
+/**
+ * Migrations
+ * 
+ * 
+ * @author Benjamin Milde
+ * 
+ * ProcessWire 2.x
+ * Copyright (C) 2011 by Ryan Cramer
+ * Licensed under GNU/GPL v2, see LICENSE.TXT
+ * 
+ * http://www.processwire.com
+ * http://www.ryancramer.com
+ * 
+ */
+class Migrations extends WireData implements Module {
+
+	const dbTableName = 'migrations';
+
+	/**
+	 * @var string The path the migration files are stored in
+	 */
+	protected $path;
+
+	/**
+	 * @var MigrationfilesArray
+	 */
+	protected $migrationfiles;
+
+	/**
+	 * @var array Defaults for creating new templates
+	 */
+	protected $creationDefaultData = [
+		'description' => '',
+		'fieldName' => '',
+		'fieldType' => '',
+		'templateName' => '',
+		'moduleName' => ''
+	];
+
+	/**
+	 * Create a new 'empty' migration file
+	 *
+	 * @param string $type Type of the migration
+	 * @param array  $options Data to be supplied to the templates
+	 * @return string pathname
+	 * @throws WireException
+	 */
+	public function createNew($type = 'default', array $options = []) {
+		$base = $this->path . "templates/$type.php.inc"; // Try custom templates first
+
+		if(!is_file($base))
+			$base = __DIR__ . "/templates/$type.php.inc";
+
+		if(!is_file($base))
+			throw new WireException('Not a valid template for creation ' . $type);
+
+		$timestamp = $this->getTime();
+		$new = $this->path . date('Y-m-d_H-i-s', $timestamp) . '.php';
+
+		if(is_file($new))
+			throw new WireException('There\'s already a file existing for the current time.');
+
+		$options = array_merge($this->creationDefaultData, $options);
+		array_walk($options, function(&$string){
+			$string = addcslashes($string, '"\\');
+		});
+
+		$content = file_get_contents($base);
+		$options = array_merge($options, array(
+			'classname' => Migrationfile::filenameToClassname($new)
+		));
+		$content = wirePopulateStringTags($content, $options);
+		file_put_contents($new, $content);
+
+		$this->getMigrations(true);
+
+		return $new;
+	}
+
+	/**
+	 * Run a migration by filename
+	 *
+	 * @param string|integer $what
+	 * @param boolean        $onlyLatest
+	 * @return MigrationfilesArray
+	 */
+	public function migrate($what, $onlyLatest = false) {
+		return $this->runMigrateOn($this->selectMigrateMigrations($what, $onlyLatest));
+	}
+
+	public function migrateAll ()
+	{
+		return $this->migrate('*');
+	}
+
+	/**
+	 * Rollback a migration by filename
+	 *
+	 * @param string|integer $what
+	 * @return MigrationfilesArray
+	 */
+	public function rollback($what) {
+		return $this->runRollbackOn($this->selectRollbackMigrations($what));
+	}
+
+	public function rollbackAll ()
+	{
+		return $this->rollback('*');
+	}
+
+	/**
+	 * Returns an array of filenames of all the migrations in $this->path
+	 *
+	 * @param bool $refresh
+	 * @return MigrationfilesArray
+	 */
+	public function getMigrations($refresh = false) {
+		if(is_null($this->migrationfiles) || $refresh) {
+			$this->migrationfiles = new MigrationfilesArray();
+
+			if(!is_dir($this->path)) $this->createPath();
+
+			// Load from filesystem
+			foreach (new DirectoryIterator($this->path) as $fileInfo) {
+				if($fileInfo->isDot() || $fileInfo->isDir()) continue;
+				if(substr($fileInfo->getBasename(), 0, 1) === '.') continue;
+
+				$this->migrationfiles->append(
+					Migrationfile::fromFileInfo($fileInfo)
+				);
+			}
+			$this->migrationfiles = $this->migrationfiles->sort('classname');
+
+			// Set migration status
+			$migrated = $this->getMigrated();
+			$this->migrationfiles->each(function(&$file) use ($migrated) {
+				$file->migrated = in_array($file->classname, $migrated);
+			});
+		}
+
+		return $this->migrationfiles;
+	}
+
+	/**
+	 * Returns an array of classnames of all the migrations, which are currently migrated
+	 *
+	 * @return array
+	 * @throws WireException
+	 */
+	protected function getMigrated()
+	{
+		$classes = [];
+
+		$table = self::dbTableName;
+		$stmt = $this->database->query("SELECT * FROM {$table}");
+		$data = $stmt->fetchAll(PDO::FETCH_OBJ);
+		foreach($data as $item) $classes[] = $item->class;
+
+		return $classes;
+	}
+
+	/**
+	 * Returns an array of all the latest migration files, which are not migrated
+	 * The filenames are sorted by their creation date
+	 *
+	 * @return MigrationfilesArray
+	 */
+	protected function getLatestToMigrate()
+	{
+		$files = $this->getMigrations()->reverse();
+		$latest = new MigrationfilesArray();
+
+		foreach ($files as $file) {
+			if($file->migrated) return $latest;
+			$latest->prepend($file);
+		}
+
+		return $latest;
+	}
+
+	/**
+	 * Make sure the path is existing at all times.
+	 */
+	protected function createPath()
+	{
+		if(!wireMkdir($this->path))
+			throw new WireException('Could not create path');
+	}
+
+	/**
+	 * @param MigrationfilesArray $files
+	 * @return MigrationfilesArray
+	 */
+	private function runMigrateOn(MigrationfilesArray $files)
+	{
+		foreach ($files as $file) {
+			$table = self::dbTableName;
+			$stmt = $this->database->prepare("INSERT INTO {$table} (class) VALUES(:class)");
+			$this->runAction($file, 'update', $stmt);
+			$file->migrated = true;
+		}
+
+		return $files;
+	}
+
+	/**
+	 * @param MigrationfilesArray $files
+	 * @return MigrationfilesArray
+	 */
+	private function runRollbackOn(MigrationfilesArray $files)
+	{
+		foreach ($files as $file) {
+			$table = self::dbTableName;
+			$stmt = $this->database->prepare("DELETE FROM {$table} WHERE class=:class");
+			$this->runAction($file, 'downgrade', $stmt);
+			$file->migrated = false;
+		}
+
+		return $files;
+	}
+
+	/**
+	 * @param $what
+	 * @param $available
+	 * @return MigrationfilesArray
+	 * @throws \WireException|\ProcessWire\WireException
+	 */
+	protected function selectMigrations ($what, $available)
+	{
+		if($what instanceof MigrationfilesArray)
+			return $what;
+
+		if (is_numeric($what))
+			return $available->slice(0, (int)$what);
+
+		if (strpos($what, '.') !== false) {
+			$filename = basename($what);
+			return $available->find("filename=$filename");
+		}
+
+		if (strlen($what) > 1)
+			return $available->find("classname=$what");
+
+		if ($what == '' || $what == '*')
+			return $available;
+
+		throw new WireException("Cannot handle input: $what.");
+	}
+
+	/**
+	 * @param $what
+	 * @param $onlyLatest
+	 * @return MigrationfilesArray
+	 */
+	public function selectMigrateMigrations ($what, $onlyLatest)
+	{
+		$available = $this->migrationfiles;
+		if ($onlyLatest) $available = $this->getLatestToMigrate();
+		$available = $available->find('migrated=0');
+		return $this->selectMigrations($what, $available);
+	}
+
+	/**
+	 * @param $what
+	 * @return MigrationfilesArray
+	 */
+	public function selectRollbackMigrations ($what)
+	{
+		$available = $this->migrationfiles->find('migrated=1')->reverse();
+		return $this->selectMigrations($what, $available);
+	}
+
+	/**
+	 * Run a migration/rollback action
+	 *
+	 * @param Migrationfile $file
+	 * @param string $function
+	 * @param PDOStatement $stmt
+	 */
+	private function runAction(Migrationfile $file, $function, $stmt) {
+		include_once($file->path);
+		$classname = $file->classname;
+
+		$migration = new $classname();
+		$migration->$function();
+
+		$stmt->bindParam(':class', $classname);
+		$stmt->execute();
+	}
+
+	/**
+	 * Ran by ProcessWire when starting the module
+	 */
+	public function init() {
+		$this->path = $this->config->paths->site . "migrations/";
+		include_once(__DIR__ . "/classes/Migrationfile.php");
+		include_once(__DIR__ . "/classes/MigrationfilesArray.php");
+		include_once(__DIR__ . "/classes/Migration.php");
+		include_once(__DIR__ . "/classes/FieldMigration.php");
+		include_once(__DIR__ . "/classes/TemplateMigration.php");
+		include_once(__DIR__ . "/classes/ModuleMigration.php");
+		include_once(__DIR__ . "/classes/AccessMigration.php");
+
+		$this->getMigrations(true);
+	}
+
+	/**
+	 * Create the database to store ran migration classes in
+	 */
+	public function ___install ()
+	{
+		$table = self::dbTableName;
+		$sql = <<< _END
+CREATE TABLE $table (
+	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+	`class` varchar(250) NOT NULL,
+	PRIMARY KEY(id),
+	UNIQUE KEY(class)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+_END;
+
+		$this->database->query($sql);
+	}
+
+	/**
+	 * Delete the database on uninstall
+	 */
+	public function ___uninstall ()
+	{
+		$table = self::dbTableName;
+		$this->database->query("DROP TABLE {$table};");
+	}
+
+	/**
+	 * Run on updates
+	 *
+	 * @param $fromVersion
+	 * @param $toVersion
+	 * @throws WireException
+	 */
+	public function ___upgrade($fromVersion, $toVersion)
+	{
+		// Update table name to lowercase
+		if(version_compare($fromVersion, "0.1.5") <= 0) {
+			$table = self::dbTableName;
+			// Force rename even if only the case differs
+			$this->database->query("RENAME TABLE {$this->className} TO {$table}_tmp;");
+			$this->database->query("RENAME TABLE {$table}_tmp TO {$table};");
+		}
+	}
+
+	/**
+	 * Only for testing reasons -.-
+	 */
+	protected function getTime ()
+	{
+		return time();
+	}
+
+}
