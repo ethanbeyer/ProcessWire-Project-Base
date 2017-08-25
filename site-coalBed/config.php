@@ -19,23 +19,20 @@ setlocale(LC_ALL,'en_US.UTF-8');
  * http://processwire.com
  *
  */
-
 if(!defined("PROCESSWIRE")) die();
+
+/**
+ * Server Character Encoding Fix
+ */
+setlocale(LC_ALL,'en_US.UTF-8');
 
 /*** SITE CONFIG *************************************************************************/
 
-/**
- * Enable debug mode?
- *
- * Debug mode causes additional info to appear for use during dev and debugging.
- * This is almost always recommended for sites in development. However, you should
- * always have this disabled for live/production sites.
- *
- * @var bool
- *
- */
-$config->debug = false;
+require_once("env.php");
 
+/**
+ * Template Pre/Append
+ */
 $config->prependTemplateFile    = '_init.php';
 $config->appendTemplateFile     = '_foot.php';
 
