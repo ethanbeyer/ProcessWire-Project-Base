@@ -7,7 +7,7 @@
 # Startup
 1. Edit `SITENAME` and `XXX.XXX` in `./Vagrantfile`
 2. From within the project, run `$ vagrant up`
-3. After running `$ vagrant up`, a command to add the site's IP to your hostfile will be printed. Copy/Paste that into the terminal to add the box's IP to your Hostfile.
+3. Add the IP/URL to your hosts file.
 
 
 # Packages
@@ -36,6 +36,8 @@
 Run the following commands:
 ```sh
 $ vagrant ssh
+$ sudo apt-get update
+$ sudo apt-get install php-gd
 $ sudo vim /etc/php5/apache2/php.ini
 $ /always_populate_raw_post_data<CR>
 ```

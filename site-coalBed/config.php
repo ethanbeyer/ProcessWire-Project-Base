@@ -1,7 +1,4 @@
 <?php
-
-setlocale(LC_ALL,'en_US.UTF-8');
-
 /**
  * ProcessWire Configuration File
  *
@@ -28,6 +25,11 @@ setlocale(LC_ALL,'en_US.UTF-8');
 
 /*** SITE CONFIG *************************************************************************/
 
+/**
+ * Environment-Specific Configs
+ *
+ * These should not be tracked in a resulting repository.
+ */
 require_once("env.php");
 
 /**
@@ -35,8 +37,3 @@ require_once("env.php");
  */
 $config->prependTemplateFile    = '_init.php';
 $config->appendTemplateFile     = '_foot.php';
-
-
-/*** INSTALLER CONFIG ********************************************************************/
-
-
