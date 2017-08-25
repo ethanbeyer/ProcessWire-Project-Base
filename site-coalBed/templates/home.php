@@ -1,13 +1,4 @@
 <?php
-
-// Class Use Calls
-
-/*
-page_fieldNames
-
-*****[otherPage]*****
-other_fieldName
-
 /*
 |==========================================================================
 | Functions
@@ -25,14 +16,12 @@ other_fieldName
 | View
 |==========================================================================
 */
-?>
 
-<?
+
 //
 // Section Name
 //
 ?>
-
 <div class="container">
 
 </div>
